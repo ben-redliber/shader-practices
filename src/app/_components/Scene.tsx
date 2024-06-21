@@ -1,58 +1,78 @@
 "use client";
-import { Canvas } from "@react-three/fiber";
-import { useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Vector2, Vector3 } from "three";
+import { useMemo, useRef, useEffect } from "react";
 import { OrbitControls } from "@react-three/drei";
+import useScreenSize from "use-screen-size";
+import useMouse from "@react-hook/mouse-position";
 
-const fragmentShader = `
-  void main() {
-    gl_FragColor = vec4(0.0, 0.3, 1.0, 1.0);
-  }
-`;
-const vertexShader = `
-  void main() {
-    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-    modelPosition.y += sin(modelPosition.x * 4.0) * 0.2;
+import defaultFragment from "@/shaders/sinecurve/fragment.glsl";
+import defaultVertex from "@/shaders/sinecurve/vertex.glsl";
 
-    vec4 viewPosition = viewMatrix * modelPosition;
-    vec4 projectedPosition = projectionMatrix * viewPosition;
-
-    gl_Position = projectedPosition;
-  }
-`;
+import type { GLSL, SceneInput } from "@/types/types";
+import SceneWrapper from "./scene-wrapper";
+import PlaneSineTime from "./scene-objects/plane-sine-time";
+import SphereNoise from "./scene-objects/sphere-noise";
+import useMousePos from "@/hooks/use-mouse-pos";
+import PlaneGradient from "./scene-objects/plane-gradient";
 
 export default function Scene({
   canvasName = "untitled",
-}: {
-  canvasName?: string;
-}) {
-  return (
-    <div className="w-[30%] border-2 border-black flex flex-col gap-0 rounded-2xl h-[50vh]">
-      <p className="text-2xl p-3">{canvasName}</p>
-      <div className="w-full h-full">
-        <Canvas
-          className="h-full w-full rounded-b-xl"
-          camera={{ position: [0.25, 1.0, 1.0] }}
-        >
-          <OrbitControls />
-          <ambientLight intensity={0.1} />
-          <directionalLight color="red" position={[0, 0, 5]} />
-          <Object />
-        </Canvas>
-      </div>
-    </div>
-  );
-}
+  canvasIndex = 999,
+  fragment = defaultFragment,
+  vertex = defaultVertex,
+  wireframe = true,
+  sceneObject = "plane-sine-time",
+  camPos = [1.0, 1.0, 1.0],
+}: SceneInput) {
+  const { x: mouseX, y: mouseY } = useMousePos();
 
-function Object() {
-  const meshRef = useRef();
   return (
-    <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} scale={1.5}>
-      <planeGeometry args={[1, 1, 32, 32]} />
-      <shaderMaterial
-        wireframe
-        fragmentShader={fragmentShader}
-        vertexShader={vertexShader}
-      />
-    </mesh>
+    <SceneWrapper canvasName={canvasName} canvasIndex={canvasIndex}>
+      <Canvas
+        className="h-full w-full rounded-b-xl"
+        camera={{ position: new Vector3(...camPos) }}
+      >
+        <OrbitControls />
+        <ambientLight intensity={0.05} />
+        <directionalLight color="red" position={[0, 0, 5]} />
+        {(() => {
+          switch (sceneObject) {
+            case "plane-sine-time":
+              return (
+                <PlaneSineTime
+                  fragment={fragment}
+                  vertex={vertex}
+                  wireframe={wireframe}
+                />
+              );
+            case "sphere-noise":
+              return (
+                <SphereNoise
+                  fragment={fragment}
+                  vertex={vertex}
+                  wireframe={wireframe}
+                />
+              );
+            case "plane-gradient":
+              return (
+                <PlaneGradient
+                  fragment={fragment}
+                  vertex={vertex}
+                  wireframe={wireframe}
+                />
+              );
+            default:
+              return (
+                <PlaneSineTime
+                  fragment={fragment}
+                  vertex={vertex}
+                  wireframe={wireframe}
+                />
+              );
+          }
+        })()}
+      </Canvas>
+    </SceneWrapper>
   );
 }
