@@ -15,6 +15,7 @@ import PlaneSineTime from "./scene-objects/plane-sine-time";
 import SphereNoise from "./scene-objects/sphere-noise";
 import useMousePos from "@/hooks/use-mouse-pos";
 import PlaneGradient from "./scene-objects/plane-gradient";
+import SphereRefraction from "./scene-objects/sphere-refraction";
 
 export default function Scene({
   canvasName = "untitled",
@@ -32,9 +33,10 @@ export default function Scene({
       <Canvas
         className="h-full w-full rounded-b-xl"
         camera={{ position: new Vector3(...camPos) }}
+        dpr={[1, 2]}
       >
         <OrbitControls />
-        <ambientLight intensity={0.05} />
+        <ambientLight intensity={1.0} />
         <directionalLight color="red" position={[0, 0, 5]} />
         {(() => {
           switch (sceneObject) {
@@ -57,6 +59,14 @@ export default function Scene({
             case "plane-gradient":
               return (
                 <PlaneGradient
+                  fragment={fragment}
+                  vertex={vertex}
+                  wireframe={wireframe}
+                />
+              );
+            case "sphere-refraction":
+              return (
+                <SphereRefraction
                   fragment={fragment}
                   vertex={vertex}
                   wireframe={wireframe}

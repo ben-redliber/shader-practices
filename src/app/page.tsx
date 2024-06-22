@@ -9,6 +9,8 @@ import sphereNoiseFrag from "@/shaders/spherenoise/fragment.glsl";
 import sphereNoiseVert from "@/shaders/spherenoise/vertex.glsl";
 import planeGradientFrag from "@/shaders/planegradient/fragment.glsl";
 import planeGradientVert from "@/shaders/planegradient/vertex.glsl";
+import sphereRefractionFrag from "@/shaders/refraction/fragment.glsl";
+import sphereRefractionVert from "@/shaders/refraction/vertex.glsl";
 
 export default function Home() {
   const defaultCanvas: SceneInput = {
@@ -42,12 +44,19 @@ export default function Home() {
       sceneObject: "plane-gradient",
       camPos: [0.25, 0.25, 0.25],
     },
-    defaultCanvas,
+    {
+      canvasName: "sphere refraction ior 1.025",
+      fragment: sphereRefractionFrag,
+      vertex: sphereRefractionVert,
+      wireframe: false,
+      sceneObject: "sphere-refraction",
+      camPos: [0, 0, 12],
+    },
     defaultCanvas,
   ];
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 p-6">
-      <p className="text-[10vw] font-medium tracking-tighter">
+      <p className="text-[12vw] font-medium tracking-tighter">
         shaders practice.
       </p>
       <div className="w-full min-h-screen flex flex-wrap gap-4 justify-center">
