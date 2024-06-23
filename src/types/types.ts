@@ -17,6 +17,7 @@ interface SceneInput extends GLSL, SceneInfo {
 
 interface SceneWrapperInput extends SceneInfo {
   children: React.ReactNode;
+  sceneObject?: string;
 }
 
 export type { GLSL, SceneInfo, SceneInput, SceneWrapperInput };

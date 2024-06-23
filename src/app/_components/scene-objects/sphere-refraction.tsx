@@ -53,8 +53,8 @@ export default function SphereRefraction({
     icoMeshRef.current.visible = true;
   });
 
-  const columns = range(-20.0, 20.0, 2.5);
-  const rows = range(-20.0, 20.0, 2.5);
+  const columns = range(-10.0, 10.0, 2.5);
+  const rows = range(-10.0, 10.0, 2.5);
 
   return (
     <>
@@ -64,17 +64,7 @@ export default function SphereRefraction({
           rows.map((row, j) => (
             <mesh position={[col, row, -4]}>
               <icosahedronGeometry args={[0.333, 8]} />
-              <meshStandardMaterial color="white" />
-            </mesh>
-          )),
-        )}
-      </group>
-      <group ref={bgRef}>
-        {columns.map((col, i) =>
-          rows.map((row, j) => (
-            <mesh position={[row, col, 4]}>
-              <icosahedronGeometry args={[0.333, 8]} />
-              <meshStandardMaterial color="white" />
+              <meshBasicMaterial color="white" />
             </mesh>
           )),
         )}

@@ -16,6 +16,8 @@ import SphereNoise from "./scene-objects/sphere-noise";
 import useMousePos from "@/hooks/use-mouse-pos";
 import PlaneGradient from "./scene-objects/plane-gradient";
 import SphereRefraction from "./scene-objects/sphere-refraction";
+import SphereDispersion from "./scene-objects/sphere-dispersion";
+import SceneCanvas from "./scene-canvas";
 
 export default function Scene({
   canvasName = "untitled",
@@ -29,60 +31,20 @@ export default function Scene({
   const { x: mouseX, y: mouseY } = useMousePos();
 
   return (
-    <SceneWrapper canvasName={canvasName} canvasIndex={canvasIndex}>
-      <Canvas
-        className="h-full w-full rounded-b-xl"
-        camera={{ position: new Vector3(...camPos) }}
-        dpr={[1, 2]}
-      >
-        <OrbitControls />
-        <ambientLight intensity={1.0} />
-        <directionalLight color="red" position={[0, 0, 5]} />
-        {(() => {
-          switch (sceneObject) {
-            case "plane-sine-time":
-              return (
-                <PlaneSineTime
-                  fragment={fragment}
-                  vertex={vertex}
-                  wireframe={wireframe}
-                />
-              );
-            case "sphere-noise":
-              return (
-                <SphereNoise
-                  fragment={fragment}
-                  vertex={vertex}
-                  wireframe={wireframe}
-                />
-              );
-            case "plane-gradient":
-              return (
-                <PlaneGradient
-                  fragment={fragment}
-                  vertex={vertex}
-                  wireframe={wireframe}
-                />
-              );
-            case "sphere-refraction":
-              return (
-                <SphereRefraction
-                  fragment={fragment}
-                  vertex={vertex}
-                  wireframe={wireframe}
-                />
-              );
-            default:
-              return (
-                <PlaneSineTime
-                  fragment={fragment}
-                  vertex={vertex}
-                  wireframe={wireframe}
-                />
-              );
-          }
-        })()}
-      </Canvas>
+    <SceneWrapper
+      canvasName={canvasName}
+      canvasIndex={canvasIndex}
+      sceneObject={sceneObject}
+    >
+      <SceneCanvas
+        vertex={vertex}
+        wireframe={wireframe}
+        sceneObject={sceneObject}
+        camPos={camPos}
+        canvasName={canvasName}
+        canvasIndex={canvasIndex}
+        fragment={fragment}
+      />
     </SceneWrapper>
   );
 }
